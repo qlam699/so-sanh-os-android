@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So sánh Hệ điều hành Android Nội địa Trung Quốc - QLAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif; /* Using Inter as a common, clean font */
+        }
+        .bg-warm-neutral-50 { background-color: #FFFBEB; } /* Lighter warm neutral */
+        .bg-warm-neutral-100 { background-color: #FEF3C7; } /* Warm neutral */
+        .text-warm-neutral-800 { color: #44403C; } /* Darker warm neutral for text */
+        .text-warm-neutral-700 { color: #57534E; }
+        .accent-bg { background-color: #0EA5E9; } /* Sky Blue */
+        .accent-text { color: #0284C7; }
+        .accent-border { border-color: #0EA5E9; }
+        .secondary-bg { background-color: #FFFBEB; } /* Lighter for cards or secondary sections */
+
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 251, 235, 0.9); /* Slightly transparent warm neutral */
+            backdrop-filter: blur(10px);
+        }
+        .nav-link {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            background-color: #0EA5E9; /* Accent color */
+            color: white;
+        }
+        .section-title {
+            font-size: 1.875rem; /* 30px */
+            font-weight: 600;
+            margin-bottom: 1.5rem; /* 24px */
+            color: #3B82F6; /* A slightly darker blue for titles */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            padding: 1.5rem; /* 24px */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Adjusted for better readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px; /* Base height sm:h-80 */
+            max-height: 400px; /* max-h-96 */
+        }
+        @media (min-width: 768px) { /* md */
+            .chart-container {
+                height: 384px; /* md:h-96 */
+            }
+        }
+        .tab-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .tab-button.active {
+            background-color: #0EA5E9;
+            color: white;
+            border-color: #0EA5E9;
+        }
+        .tab-button:not(.active):hover {
+            background-color: #E0F2FE; /* Lighter accent for hover */
+            color: #0EA5E9;
+        }
+        .recommender-btn {
+            transition: all 0.3s ease;
+        }
+        .recommender-btn:hover {
+            transform: scale(1.05);
+        }
+        .highlight-recommendation {
+            border: 2px solid #0EA5E9;
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.5);
+        }
+        /* For smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-warm-neutral-50 text-warm-neutral-800">
+
+    <header class="py-6 bg-warm-neutral-100 text-center">
+        <h1 class="text-4xl font-bold accent-text">So sánh Hệ điều hành Android Nội địa Trung Quốc</h1>
+        <p class="text-lg text-warm-neutral-700 mt-2">ColorOS vs. MagicOS vs. OriginOS</p>
+        <sub class="text-red-600 "><a href="https://github.com/qlam699/soSanhOSAndroid">https://github.com/qlam699/soSanhOSAndroid</a></sub>
+        <h3 class="mt-2">Thông tin dựa trên báo cáo tổng hợp. </h3>
+    </header>
+
+    <nav class="sticky-nav shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-center items-center py-3 space-x-2 sm:space-x-4 overflow-x-auto">
+                <a href="#gioi-thieu" class="nav-link text-sm sm:text-base">Giới thiệu</a>
+                <a href="#so-sanh-chi-tiet" class="nav-link text-sm sm:text-base">So sánh Chi tiết</a>
+                <a href="#ket-luan" class="nav-link text-sm sm:text-base">Kết luận & Đề xuất</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="gioi-thieu" class="py-12">
+            <h2 class="section-title text-center">Giới thiệu các Hệ điều hành</h2>
+            <p class="text-center text-warm-neutral-700 mb-10 max-w-3xl mx-auto">
+                Thị trường điện thoại thông minh Trung Quốc là một trung tâm đổi mới, nơi các nhà sản xuất lớn phát triển các giao diện người dùng Android tùy chỉnh. Báo cáo này so sánh ColorOS, MagicOS và OriginOS dựa trên tốc độ, độ mượt, độ ổn định và hỗ trợ tiếng Việt.
+            </p>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="card os-card" data-os="coloros">
+                    <h3 class="text-2xl font-semibold accent-text mb-3">ColorOS (Oppo)</h3>
+                    <p class="text-sm text-warm-neutral-700">Ra mắt 2013, tập trung vào phản hồi nhanh, ổn định và mượt mà. Được sử dụng trên điện thoại Oppo và OnePlus (TQ).</p>
+                    <button onclick="toggleDetails(this, 'coloros-details')" class="mt-4 text-sm accent-text font-semibold hover:underline">Xem thêm</button>
+                    <div id="coloros-details" class="hidden mt-3 text-sm text-warm-neutral-700 border-t pt-3">
+                        Thiết kế Aquamorphic lấy cảm hứng từ nước, tạo giao diện linh hoạt, sống động. Sử dụng Trinity Engine để tối ưu hóa. Cam kết 4 năm cập nhật OS, 5 năm bảo mật cho flagship.
+                    </div>
+                </div>
+                <div class="card os-card" data-os="magicos">
+                    <h3 class="text-2xl font-semibold accent-text mb-3">MagicOS (Honor)</h3>
+                    <p class="text-sm text-warm-neutral-700">Tách ra từ Huawei, tập trung vào tương tác người-máy và AI. Tạo hệ sinh thái thông minh, kết nối.</p>
+                    <button onclick="toggleDetails(this, 'magicos-details')" class="mt-4 text-sm accent-text font-semibold hover:underline">Xem thêm</button>
+                    <div id="magicos-details" class="hidden mt-3 text-sm text-warm-neutral-700 border-t pt-3">
+                        Triết lý "Niềm vui thông qua sự đơn giản". Tính năng nổi bật: MagicRing, Magic Portal. Cam kết 7 năm cập nhật OS và bảo mật cho dòng Magic.
+                    </div>
+                </div>
+                <div class="card os-card" data-os="originos">
+                    <h3 class="text-2xl font-semibold accent-text mb-3">OriginOS (Vivo)</h3>
+                    <p class="text-sm text-warm-neutral-700">Kế nhiệm Funtouch OS tại TQ (2020). Độc quyền tại TQ, hướng tới "mượt mà" và cá nhân hóa sâu.</p>
+                    <button onclick="toggleDetails(this, 'originos-details')" class="mt-4 text-sm accent-text font-semibold hover:underline">Xem thêm</button>
+                    <div id="originos-details" class="hidden mt-3 text-sm text-warm-neutral-700 border-t pt-3">
+                        Kiến trúc "lưới Klotski", Nano Alerts, hình nền động. "Interaction pool" cho phép tùy chỉnh tương tác. Độc quyền Trung Quốc là một hạn chế lớn cho người dùng quốc tế.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="so-sanh-chi-tiet" class="py-12">
+            <h2 class="section-title text-center">So sánh Chi tiết</h2>
+            <p class="text-center text-warm-neutral-700 mb-10 max-w-3xl mx-auto">
+                Phân tích sâu về từng khía cạnh của ColorOS, MagicOS và OriginOS, từ triết lý thiết kế, hiệu năng, độ ổn định cho đến khả năng hỗ trợ người dùng Việt Nam.
+            </p>
+
+            <div class="mb-8 flex justify-center space-x-2 sm:space-x-4 border-b pb-4">
+                <button class="tab-button active" onclick="showTab('tong-quan')">Tổng quan & Triết lý</button>
+                <button class="tab-button" onclick="showTab('thiet-ke-ux')">Thiết kế & UX</button>
+                <button class="tab-button" onclick="showTab('hieu-nang')">Hiệu năng</button>
+                <button class="tab-button" onclick="showTab('on-dinh')">Ổn định</button>
+                <button class="tab-button" onclick="showTab('tieng-viet')">Hỗ trợ Tiếng Việt</button>
+            </div>
+
+            <div id="tab-content">
+                <div id="tong-quan" class="tab-pane">
+                    <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Tổng quan & Triết lý Thiết kế</h3>
+                     <p class="text-warm-neutral-700 mb-8 text-center max-w-2xl mx-auto">
+                        Mỗi hệ điều hành mang một triết lý thiết kế riêng, định hình trải nghiệm người dùng cốt lõi. ColorOS hướng đến sự thanh lịch tự nhiên, MagicOS tập trung vào trí thông minh tương tác, còn OriginOS mang đến khả năng cá nhân hóa độc đáo.
+                    </p>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">ColorOS: Aquamorphic Design</h4>
+                            <p class="text-sm">Lấy cảm hứng từ nước, tạo giao diện linh hoạt, sống động, toàn diện. Nhấn mạnh sự nhẹ nhàng, dễ chịu, tích hợp liền mạch vào thói quen người dùng. Kiểu chữ OPPO Sans ưu tiên sự rõ ràng.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">MagicOS: Tương tác Người-Máy</h4>
+                            <p class="text-sm">"Niềm vui thông qua sự đơn giản". Tập trung vào tương tác trực quan, hiệu quả. MagicRing (cộng tác thiết bị), Magic Portal (truyền tải nội dung thông minh), Magic Capsule (thông báo nhẹ nhàng).</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">OriginOS: Cá nhân hóa & Độc đáo</h4>
+                            <p class="text-sm">Kiến trúc "lưới Klotski" cho màn hình chính, Nano Alerts (widget động). Cá nhân hóa sâu với hình nền động theo thời tiết. "Interaction pool" cho phép tùy chỉnh cử chỉ, trung tâm điều khiển.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="thiet-ke-ux" class="tab-pane hidden">
+                    <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Thiết kế và Trải nghiệm Người dùng (UX)</h3>
+                    <p class="text-warm-neutral-700 mb-8 text-center max-w-2xl mx-auto">
+                        Giao diện và trải nghiệm người dùng là yếu tố then chốt. ColorOS mang đến sự tinh tế, MagicOS tập trung vào các tính năng thông minh, trong khi OriginOS nổi bật với khả năng tùy biến giao diện mạnh mẽ.
+                    </p>
+                    <div class="space-y-6">
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">🎨 ColorOS</h4>
+                            <p class="text-sm"><strong>Thiết kế Aquamorphic:</strong> Hoạt ảnh, màu sắc phản ánh ánh sáng biển. Giao diện đơn giản, bóng đổ tự nhiên, hiệu ứng ánh sáng. Chuyển động mượt mà giữa ứng dụng, tối ưu cho game và đa nhiệm.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">✨ MagicOS</h4>
+                            <p class="text-sm"><strong>Tính năng thông minh:</strong> MagicRing, Magic Portal, Magic Capsule. AI hỗ trợ: Real-time Transcript, AI Summary, AI Eraser, AI Cutout. Tập trung vào luồng thông tin hiệu quả, giảm thiểu chuyển đổi ứng dụng.</p>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-2">🧩 OriginOS</h4>
+                            <p class="text-sm"><strong>Cá nhân hóa sâu:</strong> Lưới Klotski, Nano Alerts. Hình nền động theo thời tiết (mây, gió). Interaction pool tùy chỉnh cử chỉ. Trợ lý AI "Blue Heart Little V". Tùy chỉnh màn hình khóa.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="hieu-nang" class="tab-pane hidden">
+                    <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Hiệu năng: Tốc độ & Độ mượt</h3>
+                     <p class="text-warm-neutral-700 mb-8 text-center max-w-2xl mx-auto">
+                        Tốc độ khởi chạy ứng dụng, độ mượt của hoạt ảnh và khả năng phản hồi UI là những yếu tố quan trọng. Các hãng đều có công nghệ tối ưu riêng, nhưng trải nghiệm thực tế của người dùng có thể khác biệt.
+                    </p>
+                    <div class="grid lg:grid-cols-2 gap-8 items-start">
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-3">Công nghệ Tối ưu hóa</h4>
+                            <ul class="list-disc list-inside space-y-2 text-sm">
+                                <li><strong>ColorOS:</strong> Trinity Engine (ROM/RAM/CPU Vitalization), UI First, Lightning Engine (tăng phản hồi 18%, ổn định 40%).</li>
+                                <li><strong>MagicOS:</strong> AI tích hợp tối ưu hiệu suất, hình ảnh, hiển thị, tương tác.</li>
+                                <li><strong>OriginOS:</strong> Memory fusion (mở rộng RAM ảo), "card đồ họa ảo" (tăng phản hồi ứng dụng 36%, FPS 70%).</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-3 text-center">So sánh Tốc độ & Độ mượt (Mô phỏng)</h4>
+                            <div class="chart-container">
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                             <p class="text-xs text-center mt-2 text-warm-neutral-700">Biểu đồ mô phỏng dựa trên các tuyên bố và phản hồi chung. "N/A" nếu không có dữ liệu so sánh trực tiếp.</p>
+                        </div>
+                    </div>
+                    <div class="card mt-8">
+                        <h4 class="text-xl font-semibold mb-3">Phản hồi Người dùng về Độ mượt & Tốc độ</h4>
+                        <div class="grid md:grid-cols-3 gap-4 text-sm">
+                            <div>
+                                <h5 class="font-semibold">ColorOS</h5>
+                                <p>Thường được đánh giá cao về độ mượt, phản hồi nhanh. Hoạt ảnh 750ms tối ưu cho cảm nhận người dùng.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">MagicOS</h5>
+                                <p>Phản hồi trái chiều. Một số thấy mượt như iOS, số khác báo cáo giật, khựng, thiếu motion blur có thể làm giảm cảm giác mượt.</p>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold">OriginOS</h5>
+                                <p>Hoạt ảnh được khen rất mượt (tương tự HarmonyOS), nhưng có báo cáo lỗi AOD giật, trễ nhập liệu khi animation đang chạy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="on-dinh" class="tab-pane hidden">
+                    <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Độ ổn định và Tin cậy</h3>
+                    <p class="text-warm-neutral-700 mb-8 text-center max-w-2xl mx-auto">
+                        Độ ổn định hệ thống, ít lỗi vặt và chính sách cập nhật phần mềm dài hạn là yếu tố then chốt cho trải nghiệm người dùng bền vững và an toàn.
+                    </p>
+                    <div class="grid lg:grid-cols-2 gap-8 items-start">
+                        <div class="card">
+                             <h4 class="text-xl font-semibold mb-3">Phản hồi về Lỗi & Sự cố</h4>
+                            <ul class="list-disc list-inside space-y-2 text-sm">
+                                <li><strong>ColorOS:</strong> Chủ yếu tích cực, ổn định, tối ưu. Một số báo cáo cũ về thông báo/ứng dụng Google đã cải thiện.</li>
+                                <li><strong>MagicOS:</strong> Trái chiều. Có báo cáo đơ, lag, lỗi camera, thông báo, Bluetooth. Một số lại thấy ít lỗi.</li>
+                                <li><strong>OriginOS:</strong> Tương đối ổn định, nhưng có lỗi animation, AOD, thông báo. Vấn đề tương thích Google Services trên ROM TQ.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h4 class="text-xl font-semibold mb-3 text-center">Chính sách Cập nhật Phần mềm (Năm)</h4>
+                            <div class="chart-container">
+                                <canvas id="updatePolicyChart"></canvas>
+                            </div>
+                             <p class="text-xs text-center mt-2 text-warm-neutral-700">OriginOS: Dữ liệu cho ROM TQ, toàn cầu ít rõ ràng.</p>
+                        </div>
+                    </div>
+                     <div class="card mt-8">
+                        <h4 class="text-xl font-semibold mb-3">Lưu ý quan trọng về OriginOS cho người dùng Việt Nam</h4>
+                        <p class="text-sm text-warm-neutral-700">
+                            Tính chất "chỉ dành cho Trung Quốc" của OriginOS gây rủi ro lớn. Người dùng Việt Nam có thể gặp vấn đề tương thích Google Services (Maps, thông báo, định vị), yêu cầu cài đặt thủ công và các giải pháp thay thế. Chính sách cập nhật toàn cầu của Vivo thường kém hơn bản TQ. Điều này làm giảm độ ổn định và trải nghiệm tổng thể.
+                        </p>
+                    </div>
+                </div>
+
+                <div id="tieng-viet" class="tab-pane hidden">
+                    <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Hỗ trợ Tiếng Việt</h3>
+                     <p class="text-warm-neutral-700 mb-8 text-center max-w-2xl mx-auto">
+                        Mức độ hỗ trợ tiếng Việt, từ bản địa hóa giao diện đến các tính năng ngôn ngữ thông minh, là yếu tố quan trọng đối với người dùng Việt.
+                    </p>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 card">
+                            <thead class="bg-warm-neutral-100">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-warm-neutral-700 uppercase tracking-wider">Hệ điều hành</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-warm-neutral-700 uppercase tracking-wider">Hỗ trợ chính thức VN</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-warm-neutral-700 uppercase tracking-wider">Chất lượng bản địa hóa (dự kiến)</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-warm-neutral-700 uppercase tracking-wider">Tính năng AI ngôn ngữ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 text-sm">
+                                <tr>
+                                    <td class="px-4 py-3 whitespace-nowrap font-medium">ColorOS</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">Có (trang hỗ trợ, tổng đài)</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">Rất tốt</td>
+                                    <td class="px-4 py-3">Học ngôn ngữ, kể chuyện, tóm tắt, soạn thảo</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 whitespace-nowrap font-medium">MagicOS</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">Có (web khu vực, tự động nhận diện)</td>
+                                    <td class="px-4 py-3 whitespace-nowrap">Rất tốt</td>
+                                    <td class="px-4 py-3">AI tóm tắt, dịch thuật (chung)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3 whitespace-nowrap font-medium">OriginOS</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-red-600">Không (độc quyền TQ, cần cài thủ công Google)</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-red-600">Kém (thường xuyên gặp tiếng Trung, cần khắc phục)</td>
+                                    <td class="px-4 py-3">Trợ lý Blue Heart Little V, Google Gemini (nếu hoạt động)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card mt-8">
+                        <h4 class="text-xl font-semibold mb-3">Phân tích sâu hơn về Hỗ trợ Tiếng Việt</h4>
+                        <p class="text-sm text-warm-neutral-700 mb-2">
+                            <strong>ColorOS & MagicOS:</strong> Có sự hiện diện chính thức toàn cầu/khu vực, bao gồm Việt Nam. Điều này đảm bảo nguồn lực cho bản địa hóa chất lượng cao, hỗ trợ khách hàng và tương thích tốt với dịch vụ Google. Trải nghiệm tiếng Việt thường liền mạch.
+                        </p>
+                        <p class="text-sm text-warm-neutral-700">
+                            <strong>OriginOS:</strong> Do độc quyền tại Trung Quốc, dù có tùy chọn tiếng Việt, trải nghiệm thực tế cho người dùng Việt thường kém tối ưu. Các mẹo hệ thống, ứng dụng cài sẵn có thể bằng tiếng Trung. Việc thiếu hỗ trợ toàn cầu chuyên dụng khiến việc sử dụng các dịch vụ Google gặp nhiều khó khăn, ảnh hưởng lớn đến người dùng Việt Nam.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ket-luan" class="py-12 bg-warm-neutral-100">
+            <h2 class="section-title text-center">Kết luận & Đề xuất</h2>
+            <p class="text-center text-warm-neutral-700 mb-10 max-w-3xl mx-auto">
+                Tổng hợp các ưu nhược điểm và đưa ra đề xuất hệ điều hành phù hợp nhất dựa trên nhu cầu sử dụng cụ thể của người dùng Việt Nam.
+            </p>
+            <div class="card mb-8">
+                <h3 class="text-2xl font-semibold mb-4 accent-text">Tổng hợp Ưu & Nhược điểm</h3>
+                <div class="grid md:grid-cols-3 gap-6 text-sm">
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">ColorOS</h4>
+                        <p class="text-green-600"><strong>Ưu điểm:</strong> Mượt mà, ổn định, tối ưu hóa tốt, hỗ trợ tiếng Việt mạnh mẽ, cập nhật dài hạn (4+5 năm), AI thực tế.</p>
+                        <p class="text-red-600 mt-1"><strong>Nhược điểm:</strong> Ít tùy biến sâu như OriginOS.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">MagicOS</h4>
+                        <p class="text-green-600"><strong>Ưu điểm:</strong> Cập nhật siêu dài (7+7 năm), AI cá nhân hóa, hỗ trợ tiếng Việt tốt.</p>
+                        <p class="text-red-600 mt-1"><strong>Nhược điểm:</strong> Phản hồi trái chiều về độ ổn định/mượt, có báo cáo lỗi.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-lg mb-2">OriginOS</h4>
+                        <p class="text-green-600"><strong>Ưu điểm:</strong> Cá nhân hóa độc đáo, giao diện Klotski, hình nền động, cập nhật thường xuyên (ROM TQ).</p>
+                        <p class="text-red-600 mt-1"><strong>Nhược điểm:</strong> <span class="font-bold">ĐỘC QUYỀN TRUNG QUỐC</span> - Rào cản lớn cho người dùng VN (Google Services, tiếng Trung), có lỗi UI, chính sách cập nhật toàn cầu không rõ ràng.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="text-2xl font-semibold mb-6 text-center accent-text">Bạn ưu tiên điều gì?</h3>
+                <p class="text-center text-warm-neutral-700 mb-6">Chọn một ưu tiên để xem gợi ý hệ điều hành phù hợp:</p>
+                <div class="flex flex-wrap justify-center gap-3 mb-6">
+                    <button class="recommender-btn bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow" onclick="showRecommendation('all_rounder')">Toàn diện: Mượt, Ổn định, Tiếng Việt tốt</button>
+                    <button class="recommender-btn bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow" onclick="showRecommendation('long_term')">Giá trị lâu dài & Cập nhật</button>
+                    <button class="recommender-btn bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-lg shadow" onclick="showRecommendation('customization')">Cá nhân hóa & Độc đáo (chấp nhận rủi ro)</button>
+                </div>
+                <div id="recommendation-results" class="mt-6 space-y-4">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-8 border-t border-warm-neutral-200">
+        <p class="text-sm text-warm-neutral-700">&copy; 2025 Phân tích Hệ điều hành điện thoại dựa trên Android. Nguồn qlam699: https://github.com/qlam699/soSanhOSAndroid</p>
+    </footer>
+
+    <script>
+        // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        function showTab(tabId) {
+            tabPanes.forEach(pane => {
+                pane.classList.add('hidden');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('onclick').includes(tabId)) {
+                    button.classList.add('active');
+                }
+            });
+        }
+
+        // Initial tab
+        showTab('tong-quan');
+
+        // Card details toggle
+        function toggleDetails(button, elementId) {
+            const detailsDiv = document.getElementById(elementId);
+            const isHidden = detailsDiv.classList.contains('hidden');
+            if (isHidden) {
+                detailsDiv.classList.remove('hidden');
+                button.textContent = 'Ẩn bớt';
+            } else {
+                detailsDiv.classList.add('hidden');
+                button.textContent = 'Xem thêm';
+            }
+        }
+        
+        // Chart.js configuration
+        Chart.defaults.font.family = 'Inter, sans-serif';
+        Chart.defaults.color = '#57534E'; // text-warm-neutral-700
+
+        function wrappedText(text, maxWidth) {
+            const words = text.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + words[i].length + 1 <= maxWidth) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Performance Chart
+        const perfCtx = document.getElementById('performanceChart')?.getContext('2d');
+        if (perfCtx) {
+            new Chart(perfCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['ColorOS', 'MagicOS', 'OriginOS'],
+                    datasets: [{
+                        label: 'Cải thiện phản hồi ứng dụng (ước tính %)',
+                        data: [18, 15, 36], // MagicOS data is estimated/placeholder
+                        backgroundColor: ['#34D399', '#FBBF24', '#F87171'],
+                        borderColor: ['#059669', '#D97706', '#DC2626'],
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Độ ổn định thiết bị (ước tính %)',
+                        data: [40, 30, 25], // Estimated/placeholder data
+                        backgroundColor: ['#60A5FA', '#A78BFA', '#EC4899'],
+                        borderColor: ['#2563EB', '#7C3AED', '#DB2777'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Tỷ lệ Cải thiện (%)' }
+                        },
+                        x: {
+                             ticks: {
+                                callback: function(value, index, values) {
+                                    return wrappedText(this.getLabelForValue(value), 10); // Wrap at 10 chars
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}%`;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'So sánh Hiệu suất (Tuyên bố & Ước tính)',
+                            padding: { top: 10, bottom: 20 },
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Policy Chart
+        const updateCtx = document.getElementById('updatePolicyChart')?.getContext('2d');
+        if (updateCtx) {
+            new Chart(updateCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['ColorOS', 'MagicOS', 'OriginOS (TQ)'],
+                    datasets: [{
+                        label: 'Cập nhật OS chính (năm)',
+                        data: [4, 7, 2.5], // OriginOS is an estimate based on "2 releases/year" and typical lifecycle
+                        backgroundColor: '#3B82F6', // Blue
+                        borderColor: '#2563EB',
+                        borderWidth: 1
+                    }, {
+                        label: 'Cập nhật Bảo mật (năm)',
+                        data: [5, 7, 3], // OriginOS estimate
+                        backgroundColor: '#10B981', // Green
+                        borderColor: '#059669',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Số năm hỗ trợ' }
+                        },
+                         x: {
+                             ticks: {
+                                callback: function(value, index, values) {
+                                    return wrappedText(this.getLabelForValue(value), 10);
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw} năm`;
+                                }
+                            }
+                        },
+                         title: {
+                            display: true,
+                            text: 'Chính sách Cập nhật Phần mềm',
+                            padding: { top: 10, bottom: 20 },
+                            font: { size: 16 }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Recommendation Logic
+        const recommendations = {
+            all_rounder: {
+                os: "ColorOS",
+                reason: "Nổi bật với sự cân bằng giữa tốc độ, độ mượt, độ ổn định và hỗ trợ tiếng Việt mạnh mẽ. Phù hợp cho người dùng tìm kiếm trải nghiệm toàn diện và đáng tin cậy.",
+                icon: "🌟"
+            },
+            long_term: {
+                os: "MagicOS",
+                reason: "Cung cấp chính sách cập nhật phần mềm và bảo mật 7 năm hàng đầu, đảm bảo giá trị lâu dài và khả năng chống lỗi thời. Lựa chọn tốt nếu bạn muốn sử dụng điện thoại trong thời gian dài.",
+                icon: "🛡️"
+            },
+            customization: {
+                os: "OriginOS",
+                reason: "Mang đến khả năng cá nhân hóa sâu và giao diện độc đáo. Tuy nhiên, LƯU Ý: chỉ dành cho người dùng am hiểu kỹ thuật, sẵn sàng chấp nhận rủi ro tương thích do tính độc quyền tại Trung Quốc và các vấn đề với Google Services.",
+                icon: "🎨"
+            }
+        };
+
+        const recommendationResultsDiv = document.getElementById('recommendation-results');
+        const osCards = document.querySelectorAll('.os-card');
+
+        function showRecommendation(priority) {
+            const rec = recommendations[priority];
+            recommendationResultsDiv.innerHTML = `
+                <div class="card bg-sky-50 border border-sky-200 p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-semibold accent-text mb-2">${rec.icon} Đề xuất cho bạn: ${rec.os}</h4>
+                    <p class="text-warm-neutral-700">${rec.reason}</p>
+                </div>
+            `;
+            
+            osCards.forEach(card => card.classList.remove('highlight-recommendation'));
+            
+            if (rec.os.toLowerCase().includes('coloros')) {
+                document.querySelector('.os-card[data-os="coloros"]').classList.add('highlight-recommendation');
+            }
+            if (rec.os.toLowerCase().includes('magicos')) {
+                 document.querySelector('.os-card[data-os="magicos"]').classList.add('highlight-recommendation');
+            }
+            if (rec.os.toLowerCase().includes('originos')) {
+                 document.querySelector('.os-card[data-os="originos"]').classList.add('highlight-recommendation');
+            }
+        }
+        // Default recommendation on load
+        showRecommendation('all_rounder');
+
+        // Active Nav Link Scrolling
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) { // Adjusted offset for sticky nav
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+
+    </script>
+</body>
+</html>
